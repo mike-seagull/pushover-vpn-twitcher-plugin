@@ -13,14 +13,15 @@ func (pp *pushoverplugin) Init(options map[string]string){
     pp.api_token = options["api_token"]
 }
 
-func (pp *pushoverplugin) SendMessage(msg string) {
+func (pp *pushoverplugin) SendMessage(msg string) (string, error) {
     app := pushover.New(pp.api_token)
     recipient := pushover.NewRecipient(pp.user_key)
-    message := pushover.NewMessage(msg)
-    _, err := app.SendMessage(message, recipient)
+    message := pushover.NewMessageWithTitle(msg, "VPN-Twitcher")
+    resp, err := app.SendMessage(message, recipient) // returns response and err
     if err != nil {
         fmt.Println(err)
     }
+    return resp.String(), err
 }
 
 var NotificationPlugin pushoverplugin
